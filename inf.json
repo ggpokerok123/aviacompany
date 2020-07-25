@@ -1,5 +1,25 @@
 {
-	"get_updates_offset": 332016656,
+	"dosomething_inline_keyboard_markup": {
+		"inline_keyboard": [
+			[
+				{
+					"callback_data": "left_button_1",
+					"text": "Иди нахуй"
+				},
+				{
+					"callback_data": "right_button_1",
+					"text": "Умри пажалуйста"
+				}
+			],
+			[
+				{
+					"callback_data": "bottom_button",
+					"text": "Удалить всё это к хуям"
+				}
+			]
+		]
+	},
+	"get_updates_offset": 332016812,
 	"time_for_dreams": {
 		"hours_for_dreams": 9,
 		"minutes_for_dreams": 7

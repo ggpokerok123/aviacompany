@@ -16,6 +16,8 @@ users_dict = json.load(users_file)
 #Decorator for skipping errors and data autosaving
 def trying(func):
 	def wrapper(*args, **kwargs):
+		# return func(*args, **kwargs)
+
 		try: 
 			return func(*args, **kwargs)
 		except Exception as ex:
@@ -44,6 +46,18 @@ def last_update(data, offset=1):
 	return data['result'][max(len(data['result'])-offset,0)]
 
 @trying
+def get_callback_query(update):
+	return update['callback_query']
+
+@trying 
+def answer_callback_query(text, callback_query, bot):
+	requests.post(bot + 'answerCallbackQuery', params = {
+		'callback_query_id': callback_query['id'],
+		'text': text
+		})
+
+
+@trying
 def get_name(update):
 	return update['message']['from']['first_name'] + ' ' + update['message']['from']['last_name']
 
@@ -61,7 +75,7 @@ def get_username(update):
 		return get_name(update)
 
 @trying 
-def get_message(update):
+def get_text(update):
 	if update['message']['text'][0:13] != '/send_message': print(get_username(update) + ':', end = ' ')
 	if update['message']['text'][0:13] != '/send_message': print(update['message']['text'])
 	return update['message']['text']
@@ -75,6 +89,18 @@ def get_entities(update):
 def send_message(text, chat_id, bot, dis_not=False):
 	requests.post(bot + 'sendMessage', params = {'chat_id':chat_id, 'text':text, 'disable_notification':dis_not})
 	print('anasteyshen_zbot: ' + str(text), end='\n\n')
+
+
+
+
+@trying 
+def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = False):
+	requests.post(bot + 'sendMessage', params = {
+		'text' : text,
+		'chat_id' : chat_id,
+		'disable_notification' : dis_not,
+		'reply_markup' : inline_keyboard_markup
+		})
 
 
 @trying
