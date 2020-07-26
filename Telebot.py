@@ -8,11 +8,6 @@ import json
 last_data = BotModules.last_update(BotModules.get_updates_json(anasteyshen_zbot))
 BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
-# multipart/form-data
-# input_file = open('bbb.JPG', 'rb')
-
-# BotModules.send_photo('kria', 506531795, input_file, anasteyshen_zbot)
-
 
 try:
 	while True: 

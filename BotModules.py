@@ -101,14 +101,21 @@ def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = F
 		})
 
 
-# @trying
+@trying
 def send_photo(caption, chat_id, input_file, bot, dis_not = False):
-	requests.post(bot + 'sendPhoto', params = {
-		'caption' : caption,
-		'chat_id' : chat_id,
-		'photo' : input_file
-		# https://m.buro247.ua/images/2017/09/insta-of-the-week-sad-cat-luhu-17.jpg
-		})
+	if str(input_file.__class__) == "<class '_io.BufferedReader'>":
+		requests.post(bot + 'sendPhoto', params = {
+			'caption' : caption,
+			'chat_id' : chat_id,
+			}, files = {'photo': input_file})
+	else: 
+		requests.post(bot + 'sendPhoto', params = {
+			'caption' : caption,
+			'chat_id' : chat_id,
+			'photo' : input_file
+			})
+
+
 
 
 @trying
