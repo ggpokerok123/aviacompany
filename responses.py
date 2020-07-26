@@ -64,10 +64,7 @@ def text_response(text, chat_id):
 # @BotModules.trying
 def callback_query_response(callback_query):
 	
-
-	json.dump(callback_query, open('debug.json', 'w'), indent = '\t', sort_keys = True)
 	data = callback_query['data']
-
 	chat_id = callback_query['from']['id']
 
 	if data == 'left_button_1': 

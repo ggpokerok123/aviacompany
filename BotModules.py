@@ -29,8 +29,6 @@ def trying(func):
 
 @trying
 def auto_save():
-	# for user in users_dict:
-		# print(user)
 	json.dump(users_dict, open('users.json', 'w', encoding="utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 	json.dump(inf_dict, open('inf.json', 'w', encoding="utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 

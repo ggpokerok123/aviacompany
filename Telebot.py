@@ -6,8 +6,6 @@ import responses
 import json 
 
 last_data = BotModules.last_update(BotModules.get_updates_json(anasteyshen_zbot))
-
-
 BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
 
@@ -16,7 +14,9 @@ try:
 	while True: 
 		BotModules.dream_time(anasteyshen_zbot, dis_not = True)
 		data = BotModules.last_update(BotModules.get_updates_json(anasteyshen_zbot))
-		if last_data == data or data == None: continue 
+
+		if last_data['update_id'] >= data['update_id'] or data == None: continue 
+
 
 		text = BotModules.get_text(data)
 		chat_id = BotModules.get_chat_id(data)
@@ -40,6 +40,7 @@ try:
 		BotModules.send_message_to_gohnny(text, anasteyshen_zbot, pre = str(username) + ': ')
 
 		last_data = data
+		BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 		time.sleep(.5)
 except BaseException:
 	BotModules.auto_save()
