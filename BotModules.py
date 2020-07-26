@@ -84,7 +84,7 @@ def get_entities(update):
 
 
 @trying
-def send_message(text, chat_id, bot, dis_not=False):
+def send_message(text, chat_id, bot, dis_not = False):
 	requests.post(bot + 'sendMessage', params = {'chat_id':chat_id, 'text':text, 'disable_notification':dis_not})
 	print('anasteyshen_zbot: ' + str(text), end='\n\n')
 
@@ -101,8 +101,18 @@ def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = F
 		})
 
 
+# @trying
+def send_photo(caption, chat_id, input_file, bot, dis_not = False):
+	requests.post(bot + 'sendPhoto', params = {
+		'caption' : caption,
+		'chat_id' : chat_id,
+		'photo' : input_file
+		# https://m.buro247.ua/images/2017/09/insta-of-the-week-sad-cat-luhu-17.jpg
+		})
+
+
 @trying
-def send_message_to_gohnny(text, bot, pre ='',  dis_not=False):
+def send_message_to_gohnny(text, bot, pre = '',  dis_not = False):
 	requests.post(bot + 'sendMessage', params = {'chat_id':506531795, 
 		'text':pre + str(text),
 		'disable_notification' : dis_not})
