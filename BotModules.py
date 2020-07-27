@@ -2,10 +2,14 @@ import requests
 import random
 import json
 import time
-from source import dreams
+import source
 
 
 #Initialisation
+anasteyshen_zbot = source.anasteyshen_zbot
+dreams = source.dreams
+download_file = source.download_file
+
 inf_file = open('inf.json', 'r', encoding = 'utf-8')
 users_file = open('users.json', 'r', encoding = "utf-8")
 
@@ -16,8 +20,7 @@ users_dict = json.load(users_file)
 #Decorator for skipping errors and data autosaving
 def trying(func):
 	def wrapper(*args, **kwargs):
-		# return func(*args, **kwargs)
-
+		# return func(*args, **kwargs) 	
 		try: 
 			return func(*args, **kwargs)
 		except Exception as ex:
@@ -37,7 +40,10 @@ def auto_save():
 @trying
 def get_updates_json(request):
 	# Gets last 50 updates
-	return requests.get(request + 'getUpdates', params={'offset':inf_dict['get_updates_offset']-49}).json()
+	return requests.get(request + 'getUpdates', params={
+		'offset':inf_dict['get_updates_offset']-49, 
+		'timeout': 60
+		}, timeout = 60).json()
 
 @trying
 def last_update(data, offset=1): 
@@ -54,6 +60,25 @@ def answer_callback_query(text, callback_query, bot):
 		'text': text
 		})
 
+
+@trying
+def get_photo(update, bot = anasteyshen_zbot):
+	file_id = update['message']['photo'][2]['file_id']
+
+	# Getting photo's file_id
+	r = requests.get(bot + 'getFile', params = {'file_id' : file_id}).json()
+	file_path = r['result']['file_path'] # getting file path to download it
+
+	# Getting our binary file 
+	r = requests.get(download_file + file_path) # download_file is url for downloading
+
+	# Downloading our photo with name "{username}_{chat_id}.png" in folder "photos"
+	username = get_username(update)
+	chat_id = get_chat_id(update)
+	open('photos/' + str(username) + '_' + str(chat_id) + '.png', 'wb').write(r.content)	
+
+	send_message("Ого, маєш класне фото", chat_id)
+	return True
 
 @trying
 def get_name(update):
@@ -84,7 +109,7 @@ def get_entities(update):
 
 
 @trying
-def send_message(text, chat_id, bot, dis_not = False):
+def send_message(text, chat_id, bot = anasteyshen_zbot, dis_not = False):
 	requests.post(bot + 'sendMessage', params = {'chat_id':chat_id, 'text':text, 'disable_notification':dis_not})
 	print('anasteyshen_zbot: ' + str(text), end='\n\n')
 
@@ -102,7 +127,7 @@ def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = F
 
 
 @trying
-def send_photo(caption, chat_id, input_file, bot, dis_not = False):
+def send_photo(caption, chat_id, input_file, bot = anasteyshen_zbot, dis_not = False):
 	if str(input_file.__class__) == "<class '_io.BufferedReader'>":
 		requests.post(bot + 'sendPhoto', params = {
 			'caption' : caption,
@@ -120,9 +145,11 @@ def send_photo(caption, chat_id, input_file, bot, dis_not = False):
 
 @trying
 def send_message_to_gohnny(text, bot, pre = '',  dis_not = False):
-	requests.post(bot + 'sendMessage', params = {'chat_id':506531795, 
+	requests.post(bot + 'sendMessage', params = {
+		'chat_id':506531795, 
 		'text':pre + str(text),
-		'disable_notification' : dis_not})
+		'disable_notification' : dis_not
+		})
 
 
 @trying 

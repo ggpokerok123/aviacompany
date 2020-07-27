@@ -1,5 +1,6 @@
 TOKEN = '1373424406:AAHDB0B5O3GlcyCdUaRv4W-ihgMy5wRpm7I' #anasteyshen_zbot
 anasteyshen_zbot = f'https://api.telegram.org/bot{TOKEN}/'
+download_file = f'https://api.telegram.org/file/bot{TOKEN}/'
 
 
 
