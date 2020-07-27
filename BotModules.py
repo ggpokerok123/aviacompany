@@ -63,7 +63,9 @@ def answer_callback_query(text, callback_query, bot):
 
 @trying
 def get_photo(update, bot = anasteyshen_zbot):
-	file_id = update['message']['photo'][2]['file_id']
+	file_id = update['message']['photo']
+	file_id.reverse()
+	file_id = file_id[0]['file_id']
 
 	# Getting photo's file_id
 	r = requests.get(bot + 'getFile', params = {'file_id' : file_id}).json()
@@ -129,6 +131,7 @@ def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = F
 @trying
 def send_photo(caption, chat_id, input_file, bot = anasteyshen_zbot, dis_not = False):
 	if str(input_file.__class__) == "<class '_io.BufferedReader'>":
+		# sendMediaGroup
 		requests.post(bot + 'sendPhoto', params = {
 			'caption' : caption,
 			'chat_id' : chat_id,
@@ -139,6 +142,18 @@ def send_photo(caption, chat_id, input_file, bot = anasteyshen_zbot, dis_not = F
 			'chat_id' : chat_id,
 			'photo' : input_file
 			})
+
+
+
+
+# # @trying
+# def send_photo2(chat_id, media, bot = anasteyshen_zbot, dis_not = False):
+	
+# 	r = requests.post(bot + 'sendMediaGroup', params = {
+# 		'chat_id': chat_id,
+# 		'media': media
+# 		})
+# 	print(r.text)
 
 
 
