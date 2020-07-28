@@ -38,15 +38,22 @@ def auto_save():
 
 
 @trying
-def get_updates_json(request):
-	# Gets last 50 updates
-	return requests.get(request + 'getUpdates', params={
+def get_updates_json(bot = anasteyshen_zbot):
+	r = requests.get(bot + 'getUpdates', params={
 		'offset':inf_dict['get_updates_offset']-49, 
 		'timeout': 60
 		}, timeout = 60).json()
 
+	if r == None: 
+		r = {}
+		print("Something has gone wrong")
+
+	return r
+
+
 @trying
 def last_update(data, offset=1): 
+	# print("jopen")
 	return data['result'][max(len(data['result'])-offset,0)]
 
 @trying

@@ -5,8 +5,10 @@ import time
 import responses
 import json 
 
-last_data = BotModules.last_update(BotModules.get_updates_json(anasteyshen_zbot))
+last_data = BotModules.last_update(BotModules.get_updates_json())
 BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
+
+
 
 # input_file1 = {
 # 	'type': 'photo',
