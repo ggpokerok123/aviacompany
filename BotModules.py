@@ -70,10 +70,13 @@ def answer_callback_query(text, callback_query, bot):
 
 @trying
 def get_photo(update, bot = anasteyshen_zbot):
-	file_id = update['message']['photo']
-	file_id.reverse()
-	file_id = file_id[0]['file_id']
 
+	username = get_username(update)
+	chat_id = get_chat_id(update)
+	send_message("Ого, маєш класне фото", chat_id)
+
+	file_id = update['message']['photo'][-1]['file_id']
+		
 	# Getting photo's file_id
 	r = requests.get(bot + 'getFile', params = {'file_id' : file_id}).json()
 	file_path = r['result']['file_path'] # getting file path to download it
@@ -82,11 +85,8 @@ def get_photo(update, bot = anasteyshen_zbot):
 	r = requests.get(download_file + file_path) # download_file is url for downloading
 
 	# Downloading our photo with name "{username}_{chat_id}.png" in folder "photos"
-	username = get_username(update)
-	chat_id = get_chat_id(update)
 	open('photos/' + str(username) + '_' + str(chat_id) + '.png', 'wb').write(r.content)	
 
-	send_message("Ого, маєш класне фото", chat_id)
 	return True
 
 @trying
@@ -153,14 +153,42 @@ def send_photo(caption, chat_id, input_file, bot = anasteyshen_zbot, dis_not = F
 
 
 
-# # @trying
-# def send_photo2(chat_id, media, bot = anasteyshen_zbot, dis_not = False):
+@trying
+def send_media_group(chat_id, media, files = None, bot = anasteyshen_zbot, dis_not = False):
+	"""
+	type can be: animation, photo, video, audio, document
+	media = [
+		{
+			"type": "photo",
+			"media": "https://i.pinimg.com/originals/7a/04/2c/7a042c17c987a64636eda30198cad865.jpg",
+			'caption': 'А шо, звучит хайпово'
+		}, 
+		{
+			"type": "photo",
+			"media": "https://i.ytimg.com/vi/xqtgMIkjAvw/hqdefault.jpg"
+		}
+	]
+
+	or 
 	
-# 	r = requests.post(bot + 'sendMediaGroup', params = {
-# 		'chat_id': chat_id,
-# 		'media': media
-# 		})
-# 	print(r.text)
+	files = {'a' : open('a.png', 'rb'), 'b' : open('b.png', 'rb')}
+	media = [
+		{
+			"type": "photo",
+			"media": "attach://b",
+			'caption': 'А шо, звучит хайпово'
+		}, 
+		{
+			"type": "photo",
+			"media": "attach://a"
+		}
+	]
+
+	"""
+	r = requests.post(bot + 'sendMediaGroup', params = {
+		'chat_id': chat_id,
+		'media': media
+		}, files = files)
 
 
 
@@ -182,7 +210,7 @@ def dream_time(bot, dis_not = False):
 	minutes_for_dreams =  inf_dict['time_for_dreams']['minutes_for_dreams']
 
 	# Updating time
-	if time.localtime()[3] >= 9 and hours_for_dreams == -1:
+	if time.localtime()[3] >= 10 and hours_for_dreams == -1:
 		inf_dict.update({"time_for_dreams": {"hours_for_dreams": random.randint(4,9), "minutes_for_dreams": random.randint(0,59)}})
 
 	# When time is over
