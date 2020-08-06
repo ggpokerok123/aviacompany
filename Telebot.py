@@ -6,16 +6,18 @@ import responses
 import json 
 
 last_data = BotModules.last_update(BotModules.get_updates_json())
-BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
+if last_data != None: BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
+# print("AND HERE WE GO\n")
 
 
 try:
-	while True: 
+	while True:
+		# print('mem1')
 		BotModules.dream_time(anasteyshen_zbot, dis_not = True)
-		data = BotModules.last_update(BotModules.get_updates_json(anasteyshen_zbot))
-
-		if last_data['update_id'] >= data['update_id'] or data == None: continue 
+		data = BotModules.last_update(BotModules.get_updates_json())
+		# print('mem2')
+		if data == None or last_data['update_id'] >= data['update_id']: continue 
 
 		##############################################################################################
 

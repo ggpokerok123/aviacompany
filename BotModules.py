@@ -4,8 +4,14 @@ import json
 import time
 import source
 
+from googletrans import Translator
+from Imageprediction.ImagePrediction import predict
+
 
 #Initialisation
+
+translator = Translator()
+
 anasteyshen_zbot = source.anasteyshen_zbot
 dreams = source.dreams
 download_file = source.download_file
@@ -24,7 +30,7 @@ def trying(func):
 		try: 
 			return func(*args, **kwargs)
 		except Exception as ex:
-			print("ERROR: " + func.__name__ + ' ' + str(ex) )
+			print("ERROR: " + func.__name__ + ' ' + str(ex))
 			auto_save()
 	return wrapper
 
@@ -40,12 +46,13 @@ def auto_save():
 @trying
 def get_updates_json(bot = anasteyshen_zbot):
 	r = requests.get(bot + 'getUpdates', params={
-		'offset':inf_dict['get_updates_offset']-49, 
-		'timeout': 60
+		'offset':inf_dict['get_updates_offset']-49
+		# 'timeout': 0
 		}, timeout = 60).json()
+	# print('jopa ', r)
 
 	if r == None: 
-		r = {}
+		r = {'haha' : 'it\'s an Error ) ) )'}
 		print("Something has gone wrong")
 
 	return r
@@ -54,7 +61,7 @@ def get_updates_json(bot = anasteyshen_zbot):
 @trying
 def last_update(data, offset=1): 
 	# print("jopen")
-	return data['result'][max(len(data['result'])-offset,0)]
+	return None if len(data['result']) == 0 else data['result'][max(len(data['result'])-offset,0)]
 
 @trying
 def get_callback_query(update):
@@ -73,9 +80,9 @@ def get_photo(update, bot = anasteyshen_zbot):
 
 	username = get_username(update)
 	chat_id = get_chat_id(update)
-	send_message("Ого, маєш класне фото", chat_id)
-
 	file_id = update['message']['photo'][-1]['file_id']
+	
+	send_message("Ща, грузит", chat_id)
 		
 	# Getting photo's file_id
 	r = requests.get(bot + 'getFile', params = {'file_id' : file_id}).json()
@@ -83,6 +90,31 @@ def get_photo(update, bot = anasteyshen_zbot):
 
 	# Getting our binary file 
 	r = requests.get(download_file + file_path) # download_file is url for downloading
+
+
+	# Downloading photo to this folder and use imageprediction.py
+	open('Imageprediction/img.jpg', 'wb').write(r.content)	
+	predictions, probabilities = predict()
+	# print(predictions[0], ' - ', probabilities[0])
+	# print(predictions[1], ' - ', probabilities[1])
+	# print(predictions[2], ' - ', probabilities[2])
+
+	
+	if probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] > 10.0: 
+		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')
+		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
+		send_message('Ого, маєш класний ' + translation.text.lower(), chat_id)
+	elif probabilities[0]-probabilities[1] <= 10: 
+		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')
+		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
+		send_message('Ого, маєш класний ' + translation.text.lower(), chat_id)
+
+		translation = translator.translate(predictions[1].replace('_', ' '), dest = 'ru')
+		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
+		send_message('Чи маєш гарний ' + translation.text.lower() + '...', chat_id)
+	else: 
+		send_message('Я не понял(', chat_id)
+
 
 	# Downloading our photo with name "{username}_{chat_id}.png" in folder "photos"
 	open('photos/' + str(username) + '_' + str(chat_id) + '.png', 'wb').write(r.content)	
@@ -119,7 +151,10 @@ def get_entities(update):
 
 @trying
 def send_message(text, chat_id, bot = anasteyshen_zbot, dis_not = False):
-	requests.post(bot + 'sendMessage', params = {'chat_id':chat_id, 'text':text, 'disable_notification':dis_not})
+	requests.post(bot + 'sendMessage', params = {
+		'chat_id': chat_id, 
+		'text': text, 
+		'disable_notification': dis_not})
 	print('anasteyshen_zbot: ' + str(text), end='\n\n')
 
 
