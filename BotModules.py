@@ -102,6 +102,8 @@ def get_photo(update, bot = anasteyshen_zbot):
 	
 	if probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] > 10.0: 
 		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')
+		print(predictions[0].replace('_', ' '))
+		print(translation)
 		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
 		send_message('Ого, маєш класний ' + translation.text.lower(), chat_id)
 	elif probabilities[0]-probabilities[1] <= 10: 
