@@ -1,26 +1,42 @@
 {
+	"AlexThunderz": {
+		"last_dream_id": -1,
+		"send_dreams": false,
+		"user_id": 407369731
+	},
 	"Gohnny": {
-		"last_dream_id": 7,
+		"last_dream_id": -1,
+		"send_dreams": false,
 		"user_id": 506531795
 	},
 	"Karl0Marks": {
 		"last_dream_id": 4,
+		"send_dreams": false,
 		"user_id": 398950029
 	},
 	"farcrak": {
 		"last_dream_id": 7,
+		"send_dreams": false,
 		"user_id": 350704511
 	},
 	"ilya_shn": {
 		"last_dream_id": 0,
+		"send_dreams": false,
 		"user_id": 569931327
+	},
+	"jekagolovko": {
+		"last_dream_id": -1,
+		"send_dreams": false,
+		"user_id": 424893692
 	},
 	"kitty_form": {
 		"last_dream_id": 1,
+		"send_dreams": false,
 		"user_id": 769290282
 	},
 	"Елена Федоровская": {
 		"last_dream_id": 5,
+		"send_dreams": false,
 		"user_id": 1337737438056
 	}
 }

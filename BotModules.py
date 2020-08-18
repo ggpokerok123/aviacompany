@@ -2,7 +2,6 @@ import requests
 import random
 import json
 import time
-import source
 
 from googletrans import Translator
 from Imageprediction.ImagePrediction import predict
@@ -12,16 +11,15 @@ from Imageprediction.ImagePrediction import predict
 
 translator = Translator()
 
-anasteyshen_zbot = source.anasteyshen_zbot
-dreams = source.dreams
-download_file = source.download_file
-
 inf_file = open('inf.json', 'r', encoding = 'utf-8')
-users_file = open('users.json', 'r', encoding = "utf-8")
+users_file = open('users.json', 'r', encoding = 'utf-8')
 
 inf_dict = json.load(inf_file)
 users_dict = json.load(users_file)
 
+anasteyshen_zbot = inf_dict['anasteyshen_zbot']
+dreams = inf_dict['dreams']
+download_file = inf_dict['download_file']
 
 #Decorator for skipping errors and data autosaving
 def trying(func):
@@ -38,8 +36,8 @@ def trying(func):
 
 @trying
 def auto_save():
-	json.dump(users_dict, open('users.json', 'w', encoding="utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
-	json.dump(inf_dict, open('inf.json', 'w', encoding="utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	json.dump(users_dict, open('users.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	json.dump(inf_dict, open('inf.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 
 
 
@@ -47,9 +45,7 @@ def auto_save():
 def get_updates_json(bot = anasteyshen_zbot):
 	r = requests.get(bot + 'getUpdates', params={
 		'offset':inf_dict['get_updates_offset']-49
-		# 'timeout': 0
 		}, timeout = 60).json()
-	# print('jopa ', r)
 
 	if r == None: 
 		r = {'haha' : 'it\'s an Error ) ) )'}
@@ -60,7 +56,6 @@ def get_updates_json(bot = anasteyshen_zbot):
 
 @trying
 def last_update(data, offset=1): 
-	# print("jopen")
 	return None if len(data['result']) == 0 else data['result'][max(len(data['result'])-offset,0)]
 
 @trying
@@ -68,7 +63,7 @@ def get_callback_query(update):
 	return update['callback_query']
 
 @trying 
-def answer_callback_query(text, callback_query, bot):
+def answer_callback_query(text, callback_query, bot = anasteyshen_zbot):
 	requests.post(bot + 'answerCallbackQuery', params = {
 		'callback_query_id': callback_query['id'],
 		'text': text
@@ -102,11 +97,10 @@ def get_photo(update, bot = anasteyshen_zbot):
 	
 	if probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] > 10.0: 
 		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')
-		print(predictions[0].replace('_', ' '))
-		print(translation)
 		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
 		send_message('Ого, маєш класний ' + translation.text.lower(), chat_id)
-	elif probabilities[0]-probabilities[1] <= 10: 
+
+	elif probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] <= 10: 
 		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')
 		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
 		send_message('Ого, маєш класний ' + translation.text.lower(), chat_id)
@@ -114,9 +108,9 @@ def get_photo(update, bot = anasteyshen_zbot):
 		translation = translator.translate(predictions[1].replace('_', ' '), dest = 'ru')
 		translation = translator.translate(translation.text, src = 'ru', dest = 'uk')
 		send_message('Чи маєш гарний ' + translation.text.lower() + '...', chat_id)
+
 	else: 
 		send_message('Я не понял(', chat_id)
-
 
 	# Downloading our photo with name "{username}_{chat_id}.png" in folder "photos"
 	open('photos/' + str(username) + '_' + str(chat_id) + '.png', 'wb').write(r.content)	
@@ -163,7 +157,7 @@ def send_message(text, chat_id, bot = anasteyshen_zbot, dis_not = False):
 
 
 @trying 
-def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot, dis_not = False):
+def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot = anasteyshen_zbot, dis_not = False):
 	requests.post(bot + 'sendMessage', params = {
 		'text' : text,
 		'chat_id' : chat_id,
@@ -240,7 +234,7 @@ def send_message_to_gohnny(text, bot, pre = '',  dis_not = False):
 
 
 @trying 
-def dream_time(bot, dis_not = False):
+def dream_time(bot = anasteyshen_zbot, dis_not = False):
 
 	#Initialisation
 	hours_for_dreams = inf_dict['time_for_dreams']['hours_for_dreams']
@@ -253,6 +247,7 @@ def dream_time(bot, dis_not = False):
 	# When time is over
 	if time.localtime()[3] == hours_for_dreams and time.localtime()[4] == minutes_for_dreams:
 		for user in users_dict:
+			if user_dict['user']['send_dreams'] == False: continue
 
 			#Initialisation 
 			amount_of_dreams = len(dreams)
@@ -264,7 +259,7 @@ def dream_time(bot, dis_not = False):
 
 			#Sending each piece of message to each user 
 			for piece_of_dream in dreams[rnd]:
-				send_message(piece_of_dream, users_dict[user]['user_id'], bot, dis_not = dis_not)
+				send_message(piece_of_dream, users_dict[user]['user_id'], bot, dis_not = dis_not) # user['user_id'] instead of users_dict[user]['user_id']???
 
 		inf_dict.update({"time_for_dreams": {"hours_for_dreams": -1, "minutes_for_dreams": -1}})
 

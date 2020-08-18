@@ -1,4 +1,3 @@
-from source import *
 import BotModules
 import random
 import time
@@ -8,15 +7,12 @@ import json
 last_data = BotModules.last_update(BotModules.get_updates_json())
 if last_data != None: BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
-# print("AND HERE WE GO\n")
-
 
 try:
 	while True:
-		# print('mem1')
-		BotModules.dream_time(anasteyshen_zbot, dis_not = True)
+		BotModules.dream_time(dis_not = True)
 		data = BotModules.last_update(BotModules.get_updates_json())
-		# print('mem2')
+		
 		if data == None or last_data['update_id'] >= data['update_id']: continue 
 
 		##############################################################################################
@@ -25,6 +21,7 @@ try:
 			pass
 		else:
 			text = BotModules.get_text(data)
+			print(text)
 			chat_id = BotModules.get_chat_id(data)
 			entities = BotModules.get_entities(data)
 			username = BotModules.get_username(data)
@@ -38,7 +35,7 @@ try:
 			elif callback_query != None: 
 				responses.callback_query_response(callback_query)
 
-			BotModules.send_message_to_gohnny(text, anasteyshen_zbot, pre = str(username) + ': ')
+			# BotModules.send_message_to_gohnny(text, pre = str(username) + ': ')
 
 		##############################################################################################
 

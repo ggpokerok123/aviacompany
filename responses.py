@@ -1,6 +1,9 @@
-from source import *
 import json
 import BotModules
+
+
+users_dict = BotModules.users_dict
+inf_dict = BotModules.inf_dict
 
 @BotModules.trying
 def entity_response(text, chat_id, username, entities, num = 0):
@@ -24,44 +27,45 @@ def entity_response(text, chat_id, username, entities, num = 0):
 	“text_link” (for clickable text URLs), 
 	“text_mention” (for users without usernames)
 	"""
-
 	etype = entities[num]['type']
 	current_entity = text[entities[num]['offset']:entities[num]['offset']+entities[num]['length']]
-	users_dict = BotModules.users_dict
-	inf_dict = BotModules.inf_dict
+
 
 	if etype == 'bot_command':
 		if current_entity == '/start':
 
 			#updating users.json
-			users_dict.update({username : {'user_id': chat_id, 'last_dream_id': -1}})
-			BotModules.send_message(greeting, chat_id, anasteyshen_zbot)
+			users_dict.update({username : {'user_id': chat_id, 'last_dream_id': -1, 'send_dreams': False}})
+			BotModules.send_message(inf_dict['responses']['greeting'], chat_id)
 
 		elif current_entity == '/dosomething':
 			reply = json.dumps(inf_dict['dosomething_inline_keyboard_markup'])
-			BotModules.send_inline_keyboard(dosomething_ans, chat_id, reply, anasteyshen_zbot)
+			BotModules.send_inline_keyboard(inf_dict['responses']["dosomething_ans"], chat_id, reply)
 
 		elif current_entity == '/send_message': #'/send_message username text'
 			split = text.split(' ', 2)
-			BotModules.send_message(split[2], users_dict[split[1]]['user_id'], anasteyshen_zbot)
-
-
+			BotModules.send_message(split[2], users_dict[split[1]]['user_id'])
 
 	elif etype == 'url':
-		BotModules.send_message(url_ans, chat_id, anasteyshen_zbot)
+		BotModules.send_message(inf_dict['responses']['url_ans'], chat_id)
 
 	elif etype == 'text_link':
-		BotModules.send_message(current_entity + text_link_ans, chat_id, anasteyshen_zbot)
+		BotModules.send_message(current_entity + inf_dict['responses']['text_link_ans'], chat_id)
+
+
+
+
 
 @BotModules.trying
 def text_response(text, chat_id):
+	answers = inf_dict['answers']
 	if text.lower() in answers:
-		BotModules.send_message(answers[text.lower()], chat_id, anasteyshen_zbot)
+		BotModules.send_message(answers[text.lower()], chat_id)
 	else: 
-		BotModules.send_message(text, chat_id, anasteyshen_zbot)
+		BotModules.send_message(text, chat_id)
 
 
-# @BotModules.trying
+@BotModules.trying
 def callback_query_response(callback_query):
 	
 	data = callback_query['data']
@@ -76,5 +80,5 @@ def callback_query_response(callback_query):
 	elif data == 'bottom_button': 
 		callback_answert_text = ''
 		text = ''
-	BotModules.answer_callback_query(callback_answert_text, callback_query, anasteyshen_zbot)
-	BotModules.send_message(text, chat_id, anasteyshen_zbot)
+	BotModules.answer_callback_query(callback_answert_text, callback_query)
+	BotModules.send_message(text, chat_id)

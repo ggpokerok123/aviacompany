@@ -12,13 +12,13 @@ prediction.setModelTypeAsDenseNet()
 
 prediction.setModelPath("Imageprediction/inception_v3_weights_tf_dim_ordering_tf_kernels.h5")
 
+
 """
 – parameter prediction_speed (optional) : 
 This parameter allows you to reduce the time it takes to predict in an image by up to 80% which leads to slight reduction in accuracy. 
 
 This parameter accepts string values. The available values are “normal”, “fast”, “faster” and “fastest”. The default values is “normal”
 """
-
 prediction.loadModel( prediction_speed = 'normal') 
 
 def predict(): 
