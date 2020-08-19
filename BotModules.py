@@ -151,7 +151,7 @@ def send_message(text, chat_id, bot = anasteyshen_zbot, dis_not = False):
 		'chat_id': chat_id, 
 		'text': text, 
 		'disable_notification': dis_not})
-	print('anasteyshen_zbot: ' + str(text), end='\n\n')
+	# print('anasteyshen_zbot: ' + str(text), end='\n\n')
 
 
 
@@ -247,7 +247,7 @@ def dream_time(bot = anasteyshen_zbot, dis_not = False):
 	# When time is over
 	if time.localtime()[3] == hours_for_dreams and time.localtime()[4] == minutes_for_dreams:
 		for user in users_dict:
-			if user_dict['user']['send_dreams'] == False: continue
+			if users_dict[user]['send_dreams'] == False: continue
 
 			#Initialisation 
 			amount_of_dreams = len(dreams)

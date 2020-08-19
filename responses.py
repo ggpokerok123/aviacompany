@@ -34,15 +34,28 @@ def entity_response(text, chat_id, username, entities, num = 0):
 	if etype == 'bot_command':
 		if current_entity == '/start':
 
-			#updating users.json
+			#adding to users.json
 			users_dict.update({username : {'user_id': chat_id, 'last_dream_id': -1, 'send_dreams': False}})
 			BotModules.send_message(inf_dict['responses']['greeting'], chat_id)
 
-		elif current_entity == '/dosomething':
-			reply = json.dumps(inf_dict['dosomething_inline_keyboard_markup'])
-			BotModules.send_inline_keyboard(inf_dict['responses']["dosomething_ans"], chat_id, reply)
+		elif current_entity == '/senddreams': 
 
-		elif current_entity == '/send_message': #'/send_message username text'
+			# Will bot send dreams to you? 
+			if users_dict[username]['send_dreams']== False: 
+				BotModules.send_message(inf_dict['responses']['send_dreams_true'], chat_id)
+				users_dict[username]['send_dreams'] = True
+			else: 
+				BotModules.send_message(inf_dict['responses']['send_dreams_false'], chat_id)
+				users_dict[username]['send_dreams'] = False
+
+		elif current_entity == '/dosomething':
+
+			# Well, idk, bot do something with inline keyboard
+			inline_keyboard = json.dumps(inf_dict['dosomething_inline_keyboard_markup'])
+			BotModules.send_inline_keyboard(inf_dict['responses']["dosomething_ans"], chat_id, inline_keyboard)
+
+		elif current_entity == '/send_message': #'/send_message username text' - it's a secret ) ) ) Only for Gohnny
+
 			split = text.split(' ', 2)
 			BotModules.send_message(split[2], users_dict[split[1]]['user_id'])
 
