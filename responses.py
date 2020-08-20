@@ -41,7 +41,7 @@ def entity_response(text, chat_id, username, entities, num = 0):
 		elif current_entity == '/senddreams': 
 
 			# Will bot send dreams to you? 
-			if users_dict[username]['send_dreams']== False: 
+			if users_dict[username]['send_dreams'] == False: 
 				BotModules.send_message(inf_dict['responses']['send_dreams_true'], chat_id)
 				users_dict[username]['send_dreams'] = True
 			else: 
@@ -52,7 +52,12 @@ def entity_response(text, chat_id, username, entities, num = 0):
 
 			# Well, idk, bot do something with inline keyboard
 			inline_keyboard = json.dumps(inf_dict['dosomething_inline_keyboard_markup'])
-			BotModules.send_inline_keyboard(inf_dict['responses']["dosomething_ans"], chat_id, inline_keyboard)
+			BotModules.send_message(inf_dict['responses']["dosomething_ans"], chat_id, inline_keyboard)
+
+		elif current_entity == '/music':
+
+			q = text[entities[num]['offset'] + entities[num]['length'] + 1:]
+			BotModules.yt_search_and_send(q, chat_id)
 
 		elif current_entity == '/send_message': #'/send_message username text' - it's a secret ) ) ) Only for Gohnny
 
@@ -83,15 +88,18 @@ def callback_query_response(callback_query):
 	
 	data = callback_query['data']
 	chat_id = callback_query['from']['id']
-
+	message_id = callback_query['message']['message_id']
+	text = ''
 	if data == 'left_button_1': 
-		callback_answert_text = 'Поздравляем, ты теперь Федоровский!'
+		callback_answert_text = 'Поздравляем, вы теперь Федоровский!'
 		text = '😡'
 	elif data == 'right_button_1': 
 		callback_answert_text = 'Вам пизда'
 		text = 'Ты ахуел?'
 	elif data == 'bottom_button': 
-		callback_answert_text = ''
-		text = ''
+		callback_answert_text = 'А ты жёсткий'
+		edited_text = callback_query['message']['text']
+		BotModules.edit_message_text(message_id, edited_text, chat_id)
+
 	BotModules.answer_callback_query(callback_answert_text, callback_query)
 	BotModules.send_message(text, chat_id)

@@ -3,6 +3,7 @@ import random
 import json
 import time
 
+from pytube import YouTube
 from googletrans import Translator
 from Imageprediction.ImagePrediction import predict
 
@@ -90,9 +91,6 @@ def get_photo(update, bot = anasteyshen_zbot):
 	# Downloading photo to this folder and use imageprediction.py
 	open('Imageprediction/img.jpg', 'wb').write(r.content)	
 	predictions, probabilities = predict()
-	# print(predictions[0], ' - ', probabilities[0])
-	# print(predictions[1], ' - ', probabilities[1])
-	# print(predictions[2], ' - ', probabilities[2])
 
 	
 	if probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] > 10.0: 
@@ -146,24 +144,16 @@ def get_entities(update):
 
 
 @trying
-def send_message(text, chat_id, bot = anasteyshen_zbot, dis_not = False):
+def send_message(text, chat_id, inline_keyboard_markup = None, bot = anasteyshen_zbot, dis_not = False):
 	requests.post(bot + 'sendMessage', params = {
 		'chat_id': chat_id, 
 		'text': text, 
-		'disable_notification': dis_not})
+		'disable_notification': dis_not,
+		'reply_markup': inline_keyboard_markup
+		})
 	# print('anasteyshen_zbot: ' + str(text), end='\n\n')
 
 
-
-
-@trying 
-def send_inline_keyboard(text, chat_id, inline_keyboard_markup, bot = anasteyshen_zbot, dis_not = False):
-	requests.post(bot + 'sendMessage', params = {
-		'text' : text,
-		'chat_id' : chat_id,
-		'disable_notification' : dis_not,
-		'reply_markup' : inline_keyboard_markup
-		})
 
 
 @trying
@@ -216,22 +206,44 @@ def send_media_group(chat_id, media, files = None, bot = anasteyshen_zbot, dis_n
 	]
 
 	"""
-	r = requests.post(bot + 'sendMediaGroup', params = {
+	requests.post(bot + 'sendMediaGroup', params = {
 		'chat_id': chat_id,
 		'media': media
 		}, files = files)
 
 
+@trying
+def send_audio(caption, chat_id, audio, title, performer, bot = anasteyshen_zbot):
+	r = requests.post(bot + 'sendAudio', params = {
+		'chat_id': chat_id,
+		'caption': caption,
+		'title': title,
+		'performer': performer
+		}, files = {
+		'audio': audio
+		}).json()
+	# json.dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+
+
 
 
 @trying
-def send_message_to_gohnny(text, bot, pre = '',  dis_not = False):
+def send_message_to_gohnny(text, pre = '',  dis_not = False,  bot = anasteyshen_zbot):
 	requests.post(bot + 'sendMessage', params = {
 		'chat_id':506531795, 
 		'text':pre + str(text),
 		'disable_notification' : dis_not
 		})
 
+
+@trying 
+def edit_message_text(message_id, edited_text, chat_id, reply_markup = None, bot = anasteyshen_zbot):
+	requests.post(bot + 'editMessageText', params = {
+		"message_id": message_id,
+		"chat_id": chat_id,
+		"text": edited_text,
+		"reply_markup": reply_markup 
+		})
 
 @trying 
 def dream_time(bot = anasteyshen_zbot, dis_not = False):
@@ -264,3 +276,49 @@ def dream_time(bot = anasteyshen_zbot, dis_not = False):
 		inf_dict.update({"time_for_dreams": {"hours_for_dreams": -1, "minutes_for_dreams": -1}})
 
 	
+
+
+
+
+
+
+
+@trying
+def yt_search_and_send(q, chat_id):
+	yt_token = 'AIzaSyBhS2JrJ0PgQF73SLFvub72fmmArIFSN0s'
+	yt_url = 'https://www.googleapis.com/youtube/v3/'
+
+	r = requests.get(yt_url + 'search', params = {
+		"key": yt_token,
+		"part": "snippet",
+		"maxResults": 6,
+		"type": "video",
+		"q": q # KeyWords for searching 
+		}).json()['items']
+
+	audio_inline_keyboard_markup = inf_dict['audio_inline_keyboard_markup']
+
+	# json.dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	text = ''
+	i = 1 
+	videoID_dict = {}
+	for video in r: 
+		text += str(i) + ' ' + video['snippet']['channelTitle'] + ' - ' + video['snippet']['title'] + '\n\n'
+		videoID_dict.update({str(i): video['id']['videoId']})
+		i += 1 
+		# print(video['snippet']['title'])
+
+		# video['snippet']['title']
+		# video['id']['videoId']
+		# video['snippet']['channelTitle']
+
+		# yt_id = video['id']['videoId']
+		# yt = YouTube(f'https://www.youtube.com/watch?v={yt_id}')
+		# yt.streams.filter(only_audio = True)[0].download('./audios')
+	print(videoID_dict)
+	send_message('Какую?\n\n' + text, chat_id, json.dumps(audio_inline_keyboard_markup))
+
+
+
+
+

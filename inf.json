@@ -5,6 +5,38 @@
 		"кира": "Я никогда эту шмару не прощу! 😭😠",
 		"шмара": "Я никогда эту шмару не прощу! 😭😠"
 	},
+	"audio_inline_keyboard_markup": {
+		"inline_keyboard": [
+			[
+				{
+					"callback_data": "1",
+					"text": "1"
+				},
+				{
+					"callback_data": "2",
+					"text": "2"
+				},
+				{
+					"callback_data": "3",
+					"text": "3"
+				}
+			],
+			[
+				{
+					"callback_data": "4",
+					"text": "4"
+				},
+				{
+					"callback_data": "5",
+					"text": "5"
+				},
+				{
+					"callback_data": "6",
+					"text": "6"
+				}
+			]
+		]
+	},
 	"dosomething_inline_keyboard_markup": {
 		"inline_keyboard": [
 			[
@@ -69,7 +101,7 @@
 			"Доброе утро, блять"
 		]
 	],
-	"get_updates_offset": 332017286,
+	"get_updates_offset": 332017387,
 	"responses": {
 		"dosomething_ans": "Ты уже как Федоровский 🙃",
 		"greeting": "Ну що, привіт, новий друже! 🤪",
