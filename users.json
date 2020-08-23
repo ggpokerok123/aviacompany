@@ -6,6 +6,7 @@
 	},
 	"Gohnny": {
 		"last_dream_id": 3,
+		"music_search": false,
 		"send_dreams": false,
 		"user_id": 506531795
 	},
@@ -13,6 +14,11 @@
 		"last_dream_id": 4,
 		"send_dreams": false,
 		"user_id": 398950029
+	},
+	"adriano_petruccini": {
+		"last_dream_id": -1,
+		"send_dreams": false,
+		"user_id": 652772007
 	},
 	"farcrak": {
 		"last_dream_id": 7,

@@ -8,6 +8,9 @@ last_data = BotModules.last_update(BotModules.get_updates_json())
 if last_data != None: BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
 
+# print("daun!")
+# BotModules.send_audio('Kria', 506531795, '506531795', 'Title', 'Performer')
+
 
 try:
 	while True:
@@ -31,7 +34,7 @@ try:
 		if entities != None: 
 			responses.entity_response(text, chat_id, username, entities)
 		elif text != None: 
-			responses.text_response(text, chat_id)
+			responses.text_response(text, chat_id, username)
 		elif callback_query != None: 
 			responses.callback_query_response(callback_query)
 

@@ -1,36 +1,32 @@
-[
-	{
-		"etag": "IDzk8mHRA6goWzgKItOwM-q5Aj0",
-		"id": {
-			"kind": "youtube#video",
-			"videoId": "42t-NCCbShQ"
-		},
-		"kind": "youtube#searchResult",
-		"snippet": {
-			"channelId": "UCWopWNCej06Z3S4IG39yHLA",
-			"channelTitle": "Григорий Лепс - Официальный Канал",
-			"description": "Альбом \"На струнах дождя\" Музыка и слова - Евгений Григорьев. Режиссёр - Александр Солоха Оператор - Сергей Дандурян Официальный сайт ...",
-			"liveBroadcastContent": "none",
-			"publishTime": "2018-01-24T15:42:38Z",
-			"publishedAt": "2018-01-24T15:42:38Z",
-			"thumbnails": {
-				"default": {
-					"height": 90,
-					"url": "https://i.ytimg.com/vi/42t-NCCbShQ/default.jpg",
-					"width": 120
-				},
-				"high": {
-					"height": 360,
-					"url": "https://i.ytimg.com/vi/42t-NCCbShQ/hqdefault.jpg",
-					"width": 480
-				},
-				"medium": {
-					"height": 180,
-					"url": "https://i.ytimg.com/vi/42t-NCCbShQ/mqdefault.jpg",
-					"width": 320
-				}
+{
+	"inline_keyboard": [
+		[
+			{
+				"callback_data": "MqNbLsxPjhg",
+				"text": "1"
 			},
-			"title": "Григорий Лепс - Рюмка водки на столе (Official Video, 2002)"
-		}
-	}
-]
+			{
+				"callback_data": "_lHbv_T1kFY",
+				"text": "2"
+			},
+			{
+				"callback_data": "s09LA_pdwDk",
+				"text": "3"
+			}
+		],
+		[
+			{
+				"callback_data": "dw6EHYLnKpw",
+				"text": "4"
+			},
+			{
+				"callback_data": "PWYNeD6RKR4",
+				"text": "5"
+			},
+			{
+				"callback_data": "FBZW18fHYk0",
+				"text": "6"
+			}
+		]
+	]
+}

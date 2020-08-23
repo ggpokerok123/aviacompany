@@ -1,5 +1,6 @@
 import json
 import BotModules
+from audios.audio import convert_to_mp3
 
 
 users_dict = BotModules.users_dict
@@ -55,9 +56,12 @@ def entity_response(text, chat_id, username, entities, num = 0):
 			BotModules.send_message(inf_dict['responses']["dosomething_ans"], chat_id, inline_keyboard)
 
 		elif current_entity == '/music':
-
-			q = text[entities[num]['offset'] + entities[num]['length'] + 1:]
-			BotModules.yt_search_and_send(q, chat_id)
+			if text == current_entity: 
+				BotModules.send_message('Что тебе найти?)', chat_id)
+				users_dict[username]['music_search'] = True
+			else: 
+				q = text[entities[num]['offset'] + entities[num]['length'] + 1:]
+				BotModules.yt_search(q, chat_id)
 
 		elif current_entity == '/send_message': #'/send_message username text' - it's a secret ) ) ) Only for Gohnny
 
@@ -75,9 +79,13 @@ def entity_response(text, chat_id, username, entities, num = 0):
 
 
 @BotModules.trying
-def text_response(text, chat_id):
+def text_response(text, chat_id, username):
 	answers = inf_dict['answers']
-	if text.lower() in answers:
+
+	if users_dict[username].get('music_search') == True:
+		BotModules.yt_search(text, chat_id)
+		users_dict[username]['music_search'] = False
+	elif text.lower() in answers:
 		BotModules.send_message(answers[text.lower()], chat_id)
 	else: 
 		BotModules.send_message(text, chat_id)
@@ -90,6 +98,7 @@ def callback_query_response(callback_query):
 	chat_id = callback_query['from']['id']
 	message_id = callback_query['message']['message_id']
 	text = ''
+	callback_answert_text = ''
 	if data == 'left_button_1': 
 		callback_answert_text = 'Поздравляем, вы теперь Федоровский!'
 		text = '😡'
@@ -100,6 +109,13 @@ def callback_query_response(callback_query):
 		callback_answert_text = 'А ты жёсткий'
 		edited_text = callback_query['message']['text']
 		BotModules.edit_message_text(message_id, edited_text, chat_id)
+	elif data[0:3] == 'yt:':
+		BotModules.send_message('Так, сейчас посмотрим...', chat_id)
+
+		audio_file, title, performer = BotModules.download_from_yt(data[3:])
+
+		convert_to_mp3(audio_file)
+		BotModules.send_audio('', chat_id, open('./audios/audio.mp3', 'rb'), title, performer)
 
 	BotModules.answer_callback_query(callback_answert_text, callback_query)
 	BotModules.send_message(text, chat_id)

@@ -134,8 +134,8 @@ def get_username(update):
 
 @trying 
 def get_text(update):
-	if update['message']['text'][0:13] != '/send_message': print(get_username(update) + ':', end = ' ')
-	if update['message']['text'][0:13] != '/send_message': print(update['message']['text'])
+	# if update['message']['text'][0:13] != '/send_message': print(get_username(update) + ':', end = ' ')
+	# if update['message']['text'][0:13] != '/send_message': print(update['message']['text'])
 	return update['message']['text']
 
 @trying
@@ -217,6 +217,7 @@ def send_audio(caption, chat_id, audio, title, performer, bot = anasteyshen_zbot
 	r = requests.post(bot + 'sendAudio', params = {
 		'chat_id': chat_id,
 		'caption': caption,
+		# 'audio': audio,
 		'title': title,
 		'performer': performer
 		}, files = {
@@ -281,10 +282,15 @@ def dream_time(bot = anasteyshen_zbot, dis_not = False):
 
 
 
+# @trying
+def download_from_yt(yt_id):
+	yt = YouTube(f'https://www.youtube.com/watch?v={yt_id}')
+	audio_file = yt.streams.filter(only_audio = True)[0].download('./audios', 'audio').split('\\')[-1]
+	return audio_file, yt.title, yt.author 
 
 
 @trying
-def yt_search_and_send(q, chat_id):
+def yt_search(q, chat_id):
 	yt_token = 'AIzaSyBhS2JrJ0PgQF73SLFvub72fmmArIFSN0s'
 	yt_url = 'https://www.googleapis.com/youtube/v3/'
 
@@ -298,25 +304,29 @@ def yt_search_and_send(q, chat_id):
 
 	audio_inline_keyboard_markup = inf_dict['audio_inline_keyboard_markup']
 
+
 	# json.dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 	text = ''
-	i = 1 
+	i = 0
 	videoID_dict = {}
 	for video in r: 
-		text += str(i) + ' ' + video['snippet']['channelTitle'] + ' - ' + video['snippet']['title'] + '\n\n'
-		videoID_dict.update({str(i): video['id']['videoId']})
+		"""
+		video['snippet']['title']
+		video['id']['videoId']
+		video['snippet']['channelTitle']
+		"""
+		text += str(i + 1) + ' ' + video['snippet']['channelTitle'] + ' - ' + video['snippet']['title'] + '\n\n'
+		# video_dict.update({str(i):{
+		# 	"videoID": video['id']['videoId'],
+		# 	"title": video['snippet']['title'],
+		# 	"channelTitle": video['snippet']['channelTitle']
+		# 	}})
+
+		audio_inline_keyboard_markup['inline_keyboard'][int(i / 3)][i % 3]['callback_data'] = 'yt:' + video['id']['videoId']
 		i += 1 
-		# print(video['snippet']['title'])
 
-		# video['snippet']['title']
-		# video['id']['videoId']
-		# video['snippet']['channelTitle']
-
-		# yt_id = video['id']['videoId']
-		# yt = YouTube(f'https://www.youtube.com/watch?v={yt_id}')
-		# yt.streams.filter(only_audio = True)[0].download('./audios')
-	print(videoID_dict)
 	send_message('Какую?\n\n' + text, chat_id, json.dumps(audio_inline_keyboard_markup))
+
 
 
 
