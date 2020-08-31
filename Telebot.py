@@ -1,15 +1,10 @@
 import BotModules
-import random
-import time
 import responses
-import json 
+import time
 
 last_data = BotModules.last_update(BotModules.get_updates_json())
 if last_data != None: BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
-
-# print("daun!")
-# BotModules.send_audio('Kria', 506531795, '506531795', 'Title', 'Performer')
 
 
 try:

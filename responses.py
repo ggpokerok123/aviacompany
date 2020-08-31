@@ -1,5 +1,6 @@
-import json
 import BotModules
+
+from json import dumps
 from audios.audio import convert_to_mp3
 
 
@@ -52,7 +53,7 @@ def entity_response(text, chat_id, username, entities, num = 0):
 		elif current_entity == '/dosomething':
 
 			# Well, idk, bot do something with inline keyboard
-			inline_keyboard = json.dumps(inf_dict['dosomething_inline_keyboard_markup'])
+			inline_keyboard = dumps(inf_dict['dosomething_inline_keyboard_markup'])
 			BotModules.send_message(inf_dict['responses']["dosomething_ans"], chat_id, inline_keyboard)
 
 		elif current_entity == '/music':
@@ -67,6 +68,9 @@ def entity_response(text, chat_id, username, entities, num = 0):
 
 			split = text.split(' ', 2)
 			BotModules.send_message(split[2], users_dict[split[1]]['user_id'])
+
+		elif current_entity == '/kria':
+			BotModules.send_message(len(users_dict), chat_id)
 
 	elif etype == 'url':
 		BotModules.send_message(inf_dict['responses']['url_ans'], chat_id)

@@ -1,9 +1,8 @@
-import requests 
-import random
-import json
-import time
-
+from random import randint
+from requests import get, post
+from time import localtime 
 from pytube import YouTube
+from json import load, dump, dumps
 from googletrans import Translator
 from Imageprediction.ImagePrediction import predict
 
@@ -15,8 +14,8 @@ translator = Translator()
 inf_file = open('inf.json', 'r', encoding = 'utf-8')
 users_file = open('users.json', 'r', encoding = 'utf-8')
 
-inf_dict = json.load(inf_file)
-users_dict = json.load(users_file)
+inf_dict = load(inf_file)
+users_dict = load(users_file)
 
 anasteyshen_zbot = inf_dict['anasteyshen_zbot']
 dreams = inf_dict['dreams']
@@ -37,14 +36,14 @@ def trying(func):
 
 @trying
 def auto_save():
-	json.dump(users_dict, open('users.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
-	json.dump(inf_dict, open('inf.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	dump(users_dict, open('users.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	dump(inf_dict, open('inf.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 
 
 
 @trying
 def get_updates_json(bot = anasteyshen_zbot):
-	r = requests.get(bot + 'getUpdates', params={
+	r = get(bot + 'getUpdates', params={
 		'offset':inf_dict['get_updates_offset']-49
 		}, timeout = 60).json()
 
@@ -65,7 +64,7 @@ def get_callback_query(update):
 
 @trying 
 def answer_callback_query(text, callback_query, bot = anasteyshen_zbot):
-	requests.post(bot + 'answerCallbackQuery', params = {
+	post(bot + 'answerCallbackQuery', params = {
 		'callback_query_id': callback_query['id'],
 		'text': text
 		})
@@ -81,11 +80,11 @@ def get_photo(update, bot = anasteyshen_zbot):
 	send_message("Ща, грузит", chat_id)
 		
 	# Getting photo's file_id
-	r = requests.get(bot + 'getFile', params = {'file_id' : file_id}).json()
+	r = get(bot + 'getFile', params = {'file_id' : file_id}).json()
 	file_path = r['result']['file_path'] # getting file path to download it
 
 	# Getting our binary file 
-	r = requests.get(download_file + file_path) # download_file is url for downloading
+	r = get(download_file + file_path) # download_file is url for downloading
 
 
 	# Downloading photo to this folder and use imageprediction.py
@@ -145,7 +144,7 @@ def get_entities(update):
 
 @trying
 def send_message(text, chat_id, inline_keyboard_markup = None, bot = anasteyshen_zbot, dis_not = False):
-	requests.post(bot + 'sendMessage', params = {
+	post(bot + 'sendMessage', params = {
 		'chat_id': chat_id, 
 		'text': text, 
 		'disable_notification': dis_not,
@@ -160,12 +159,12 @@ def send_message(text, chat_id, inline_keyboard_markup = None, bot = anasteyshen
 def send_photo(caption, chat_id, input_file, bot = anasteyshen_zbot, dis_not = False):
 	if str(input_file.__class__) == "<class '_io.BufferedReader'>":
 		# sendMediaGroup
-		requests.post(bot + 'sendPhoto', params = {
+		post(bot + 'sendPhoto', params = {
 			'caption' : caption,
 			'chat_id' : chat_id,
 			}, files = {'photo': input_file})
 	else: 
-		requests.post(bot + 'sendPhoto', params = {
+		post(bot + 'sendPhoto', params = {
 			'caption' : caption,
 			'chat_id' : chat_id,
 			'photo' : input_file
@@ -206,7 +205,7 @@ def send_media_group(chat_id, media, files = None, bot = anasteyshen_zbot, dis_n
 	]
 
 	"""
-	requests.post(bot + 'sendMediaGroup', params = {
+	post(bot + 'sendMediaGroup', params = {
 		'chat_id': chat_id,
 		'media': media
 		}, files = files)
@@ -214,7 +213,7 @@ def send_media_group(chat_id, media, files = None, bot = anasteyshen_zbot, dis_n
 
 @trying
 def send_audio(caption, chat_id, audio, title, performer, bot = anasteyshen_zbot):
-	r = requests.post(bot + 'sendAudio', params = {
+	r = post(bot + 'sendAudio', params = {
 		'chat_id': chat_id,
 		'caption': caption,
 		# 'audio': audio,
@@ -223,14 +222,14 @@ def send_audio(caption, chat_id, audio, title, performer, bot = anasteyshen_zbot
 		}, files = {
 		'audio': audio
 		}).json()
-	# json.dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	# dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 
 
 
 
 @trying
 def send_message_to_gohnny(text, pre = '',  dis_not = False,  bot = anasteyshen_zbot):
-	requests.post(bot + 'sendMessage', params = {
+	post(bot + 'sendMessage', params = {
 		'chat_id':506531795, 
 		'text':pre + str(text),
 		'disable_notification' : dis_not
@@ -239,7 +238,7 @@ def send_message_to_gohnny(text, pre = '',  dis_not = False,  bot = anasteyshen_
 
 @trying 
 def edit_message_text(message_id, edited_text, chat_id, reply_markup = None, bot = anasteyshen_zbot):
-	requests.post(bot + 'editMessageText', params = {
+	post(bot + 'editMessageText', params = {
 		"message_id": message_id,
 		"chat_id": chat_id,
 		"text": edited_text,
@@ -254,17 +253,17 @@ def dream_time(bot = anasteyshen_zbot, dis_not = False):
 	minutes_for_dreams =  inf_dict['time_for_dreams']['minutes_for_dreams']
 
 	# Updating time
-	if time.localtime()[3] >= 10 and hours_for_dreams == -1:
-		inf_dict.update({"time_for_dreams": {"hours_for_dreams": random.randint(4,9), "minutes_for_dreams": random.randint(0,59)}})
+	if localtime()[3] >= 10 and hours_for_dreams == -1:
+		inf_dict.update({"time_for_dreams": {"hours_for_dreams": randint(4,9), "minutes_for_dreams": randint(0,59)}})
 
 	# When time is over
-	if time.localtime()[3] == hours_for_dreams and time.localtime()[4] == minutes_for_dreams:
+	if localtime()[3] == hours_for_dreams and localtime()[4] == minutes_for_dreams:
 		for user in users_dict:
 			if users_dict[user]['send_dreams'] == False: continue
 
 			#Initialisation 
 			amount_of_dreams = len(dreams)
-			rnd = random.randint(0, amount_of_dreams-1)
+			rnd = randint(0, amount_of_dreams-1)
 
 			# Picking out random id of dream, which shouldn't duplicate previous one
 			if rnd == users_dict[user]['last_dream_id']: rnd = rnd - 1 #In case, when new dream id dublicate previous id of dream sended to this user 
@@ -294,7 +293,7 @@ def yt_search(q, chat_id):
 	yt_token = 'AIzaSyBhS2JrJ0PgQF73SLFvub72fmmArIFSN0s'
 	yt_url = 'https://www.googleapis.com/youtube/v3/'
 
-	r = requests.get(yt_url + 'search', params = {
+	r = get(yt_url + 'search', params = {
 		"key": yt_token,
 		"part": "snippet",
 		"maxResults": 6,
@@ -305,7 +304,7 @@ def yt_search(q, chat_id):
 	audio_inline_keyboard_markup = inf_dict['audio_inline_keyboard_markup']
 
 
-	# json.dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
+	# dump(r, open('debug.json', 'w', encoding = "utf-8"), indent = '\t', sort_keys = True, ensure_ascii = False)
 	text = ''
 	i = 0
 	videoID_dict = {}
@@ -325,7 +324,7 @@ def yt_search(q, chat_id):
 		audio_inline_keyboard_markup['inline_keyboard'][int(i / 3)][i % 3]['callback_data'] = 'yt:' + video['id']['videoId']
 		i += 1 
 
-	send_message('Какую?\n\n' + text, chat_id, json.dumps(audio_inline_keyboard_markup))
+	send_message('Какую?\n\n' + text, chat_id, dumps(audio_inline_keyboard_markup))
 
 
 
