@@ -4,6 +4,7 @@ from time import localtime
 from pytube import YouTube
 from json import load, dump, dumps
 from googletrans import Translator
+from os import system
 from Imageprediction.ImagePrediction import predict
 
 
@@ -279,13 +280,26 @@ def dream_time(bot = anasteyshen_zbot, dis_not = False):
 
 
 
-
-
-# @trying
+@trying
 def download_from_yt(yt_id):
-	yt = YouTube(f'https://www.youtube.com/watch?v={yt_id}')
-	audio_file = yt.streams.filter(only_audio = True)[0].download('./audios', 'audio').split('\\')[-1]
-	return audio_file, yt.title, yt.author 
+	import youtube_dl
+	ydl_opts = {
+		'writeinfojson': True,
+		'format': 'bestaudio/best',
+    	'postprocessors': [{
+	        'key': 'FFmpegExtractAudio',
+	        'preferredcodec': 'mp3'
+		}],
+		'outtmpl': "./audios/audio.%(ext)s",
+		'quiet': True
+	}
+	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+		ydl.download([f'https://www.youtube.com/watch?v={yt_id}'])
+
+	audio_info_dict = load(open('./audios/audio.info.json', 'rb'))
+	title, author = audio_info_dict['title'], audio_info_dict['uploader']
+
+	return 'audio.mp3', title, author
 
 
 @trying

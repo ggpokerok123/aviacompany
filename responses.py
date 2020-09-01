@@ -1,7 +1,6 @@
 import BotModules
 
 from json import dumps
-from audios.audio import convert_to_mp3
 
 
 users_dict = BotModules.users_dict
@@ -95,13 +94,13 @@ def text_response(text, chat_id, username):
 		BotModules.send_message(text, chat_id)
 
 
-@BotModules.trying
+# @BotModules.trying
 def callback_query_response(callback_query):
 	
 	data = callback_query['data']
 	chat_id = callback_query['from']['id']
 	message_id = callback_query['message']['message_id']
-	text = ''
+	text = ''		
 	callback_answert_text = ''
 	if data == 'left_button_1': 
 		callback_answert_text = 'Поздравляем, вы теперь Федоровский!'
@@ -115,10 +114,8 @@ def callback_query_response(callback_query):
 		BotModules.edit_message_text(message_id, edited_text, chat_id)
 	elif data[0:3] == 'yt:':
 		BotModules.send_message('Так, сейчас посмотрим...', chat_id)
-
 		audio_file, title, performer = BotModules.download_from_yt(data[3:])
 
-		convert_to_mp3(audio_file)
 		BotModules.send_audio('', chat_id, open('./audios/audio.mp3', 'rb'), title, performer)
 
 	BotModules.answer_callback_query(callback_answert_text, callback_query)

@@ -6,7 +6,7 @@ last_data = BotModules.last_update(BotModules.get_updates_json())
 if last_data != None: BotModules.inf_dict.update({'get_updates_offset': last_data["update_id"]})
 
 
-
+print('daun')
 try:
 	while True:
 		BotModules.dream_time(dis_not = True)
