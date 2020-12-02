@@ -22,7 +22,9 @@ This parameter accepts string values. The available values are “normal”, “
 prediction.loadModel( prediction_speed = 'normal') 
 
 def predict(): 
+	print("kria1")
 	predictions, probabilities = prediction.predictImage("Imageprediction/img.jpg", result_count = 3)
+	print("kria2")
 	return predictions, probabilities
 	# for eachPrediction, eachProbability in zip(predictions, probabilities):
 	#     print(eachPrediction , " : " , eachProbability)

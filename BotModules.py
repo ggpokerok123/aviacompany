@@ -90,8 +90,12 @@ def get_photo(update, bot = anasteyshen_zbot):
 
 	# Downloading photo to this folder and use imageprediction.py
 	open('Imageprediction/img.jpg', 'wb').write(r.content)	
+	""" BUGS ! ! ! 
 	predictions, probabilities = predict()
-
+	print(predictions[0].replace('_', ' '))
+	print(translator.translate(predictions[0].replace('_', ' '), dest = 'ru'))
+	translation = translator.translate("six", src = 'ru', dest = 'uk')
+	"""
 	
 	if probabilities[0] >= 50.0 and probabilities[0]-probabilities[1] > 10.0: 
 		translation = translator.translate(predictions[0].replace('_', ' '), dest = 'ru')

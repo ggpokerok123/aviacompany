@@ -9,29 +9,29 @@
 		"inline_keyboard": [
 			[
 				{
-					"callback_data": "yt:po-Bo9rc8tM",
+					"callback_data": "yt:XSnhFClZnCA",
 					"text": "1"
 				},
 				{
-					"callback_data": "yt:phxQFEH51SE",
+					"callback_data": "yt:Lfo29TGB8DQ",
 					"text": "2"
 				},
 				{
-					"callback_data": "yt:tO91c8vbT7A",
+					"callback_data": "yt:Emzw_VxkK50",
 					"text": "3"
 				}
 			],
 			[
 				{
-					"callback_data": "yt:Wl98N8Kw1K8",
+					"callback_data": "yt:xgNkUh_GwCI",
 					"text": "4"
 				},
 				{
-					"callback_data": "yt:rqHNPztMfFw",
+					"callback_data": "yt:BjDyL-ZO4wI",
 					"text": "5"
 				},
 				{
-					"callback_data": "yt:gpD5kdayz4Y",
+					"callback_data": "yt:zKbozLYtWeM",
 					"text": "6"
 				}
 			]
@@ -101,7 +101,7 @@
 			"Доброе утро, блять"
 		]
 	],
-	"get_updates_offset": 332017896,
+	"get_updates_offset": 332017962,
 	"responses": {
 		"dosomething_ans": "Ты уже как Федоровский 🙃",
 		"greeting": "Ну що, привіт, новий друже! 🤪",
